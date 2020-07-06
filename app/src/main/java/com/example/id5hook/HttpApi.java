@@ -3,16 +3,27 @@ package com.example.id5hook;
 import fi.iki.elonen.NanoHTTPD;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
-import java.io.IOException;
+import java.io.File;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import android.content.SharedPreferences;
+
+import androidx.annotation.RequiresApi;
+
+import com.google.gson.Gson;
 
 public class HttpApi extends NanoHTTPD {
-    private static int port = 9090;
     public HttpApi(Context context) throws IOException {
-        super(port);
+        super(9090);
         SetDeviceInfo();
-        Log.d("benija", "ListenServerAt:127.0.0.1:" + port);
+        Log.d("benija", "benija;111111");
         start();
     }
 
@@ -21,18 +32,29 @@ public class HttpApi extends NanoHTTPD {
     */
     @Override
     public Response serve(IHTTPSession session) {
-        Log.d("benija", "handleServerFrom:" + session.getRemoteIpAddress());
         SetDeviceInfo();
         return newFixedLengthResponse("suc");
     }
 
     public void SetDeviceInfo() {
-        PreferencesUtil.getInstance().saveParam("getDeviceId", GenParams.getDeviceId());
-        PreferencesUtil.getInstance().saveParam("android_id", GenParams.getAndroid());
-        PreferencesUtil.getInstance().saveParam("getSimSerialNumber", GenParams.getSimSerialNumber());
-        PreferencesUtil.getInstance().saveParam("getSubscriberId", GenParams.getSubscriberId());
-        PreferencesUtil.getInstance().saveParam("getMacAddress", GenParams.getMac());
-        PreferencesUtil.getInstance().saveParam("getBSSID", GenParams.getMac());
-        PreferencesUtil.getInstance().saveParam("ro.config.low_ram", "false");
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("getDeviceId", GenParams.getDeviceId());
+        paramsMap.put("android_id", GenParams.getAndroid());
+        paramsMap.put("getSimSerialNumber", GenParams.getSimSerialNumber());
+        paramsMap.put("getSubscriberId", GenParams.getSubscriberId());
+        paramsMap.put("getMacAddress", GenParams.getMac());
+        paramsMap.put("getBSSID", GenParams.getMac());
+        paramsMap.put("ro.config.low_ram", "false");
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(paramsMap);
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(new File("/mnt/sdcard/" + "mbi"));
+            fileOutputStream.write("asd".getBytes());
+            fileOutputStream.close();
+        } catch (IOException e) {
+            Log.d("benija", "fileExc222e" + e.getMessage());
+        }
+        Log.d("benija", "filefinsi2222h");
+
     }
 }

@@ -32,7 +32,7 @@ public class PreferencesUtil {
     }
 
     public void init(Context context){
-        preferences = context.getSharedPreferences("config", context.MODE_WORLD_READABLE);
+        preferences = context.getSharedPreferences("config", Context.MODE_PRIVATE);
 
     }
 

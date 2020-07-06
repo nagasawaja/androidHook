@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // init SharedPreferences
 
-        PreferencesUtil.getInstance().init(this);
+//        PreferencesUtil.getInstance().init(this);
         try {
             httpapi = new HttpApi(this);
 //            XposedBridge.log("onResumeHttp");

@@ -2,18 +2,33 @@ package com.example.id5hook;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import android.os.Build;
 import android.util.Log;
 
-public class TelephoneHook extends XC_MethodHook{
+import com.google.gson.Gson;
 
+import java.io.File;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+public class TelephoneHook extends XC_MethodHook{
+    public static Map<String, String> paramsMap = new HashMap<String, String>();
     private String getValue(String p) {
-        XSharedPreferences  v  = new XSharedPreferences("com.example.id5hook","config");
-        String returnValue = v.getString(p, "");
-        if (returnValue == "") {
+        String returnValue = "";
+        if (paramsMap.containsKey("getDeviceId")) {
+            returnValue = paramsMap.get(p);
+        } else {
+            String jsonString = FileUtil.readString("/mnt/sdcard/beniParamsJson.json", "utf-8");
+            Gson gson = new Gson();
+            paramsMap = gson.fromJson(jsonString, paramsMap.getClass());
+            returnValue = paramsMap.get(p);
+        }
+
+        if (returnValue == null || returnValue == "") {
             Log.d("benija", "getValue:" + p);
+            returnValue = "";
         }
         return returnValue;
     }

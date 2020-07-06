@@ -45,7 +45,10 @@ public class XModule implements IXposedHookLoadPackage {
     }
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if(!"com.netease.dwrg".equals(lpparam.packageName)) {
+        Log.d("benija", "begin:");
+        XposedBridge.log("Loaded app: " + lpparam.packageName);
+        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName)) {
+            Log.d("benija", "fuckOther:" + lpparam.packageName);
             return;
         }
         Log.d("benija", "begin:" + lpparam.packageName);
