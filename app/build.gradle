@@ -26,6 +26,7 @@ dependencies {
     implementation files('libs/nanohttpd-2.3.0.jar')
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation files('libs\\gson-2.8.0.jar')
+    implementation files('libs\\gson-2.8.0.jar')
     compileOnly files('lib/XposedBridgeAPI-89.jar')
     compileOnly fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.1.0'

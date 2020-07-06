@@ -20,10 +20,11 @@ import androidx.annotation.RequiresApi;
 import com.google.gson.Gson;
 
 public class HttpApi extends NanoHTTPD {
+    private static int port = 9090;
     public HttpApi(Context context) throws IOException {
-        super(9090);
+        super(port);
         SetDeviceInfo();
-        Log.d("benija", "benija;111111");
+        Log.d("benija", "ListenServerAt:127.0.0.1:" + port);
         start();
     }
 
@@ -48,8 +49,8 @@ public class HttpApi extends NanoHTTPD {
         Gson gson = new Gson();
         String jsonString = gson.toJson(paramsMap);
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File("/mnt/sdcard/" + "mbi"));
-            fileOutputStream.write("asd".getBytes());
+            FileOutputStream fileOutputStream = new FileOutputStream(new File("/mnt/sdcard/benija.json"));
+            fileOutputStream.write(jsonString.getBytes());
             fileOutputStream.close();
         } catch (IOException e) {
             Log.d("benija", "fileExc222e" + e.getMessage());

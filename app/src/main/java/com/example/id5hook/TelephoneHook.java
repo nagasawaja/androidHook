@@ -19,11 +19,13 @@ public class TelephoneHook extends XC_MethodHook{
         String returnValue = "";
         if (paramsMap.containsKey("getDeviceId")) {
             returnValue = paramsMap.get(p);
+            Log.d("benija", "getValue1");
         } else {
-            String jsonString = FileUtil.readString("/mnt/sdcard/beniParamsJson.json", "utf-8");
+            String jsonString = FileUtil.readString("/mnt/sdcard/benija.json", "utf-8");
             Gson gson = new Gson();
             paramsMap = gson.fromJson(jsonString, paramsMap.getClass());
             returnValue = paramsMap.get(p);
+            Log.d("benija", "getValue2");
         }
 
         if (returnValue == null || returnValue == "") {

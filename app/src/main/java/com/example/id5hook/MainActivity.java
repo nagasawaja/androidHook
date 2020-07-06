@@ -18,15 +18,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // init SharedPreferences
-
-//        PreferencesUtil.getInstance().init(this);
         try {
             httpapi = new HttpApi(this);
-//            XposedBridge.log("onResumeHttp");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("onResume", "WebServer start failed" + e.getMessage());
+            Log.e("benija", "WebServer start failed" + e.getMessage());
         }
     }
 }
