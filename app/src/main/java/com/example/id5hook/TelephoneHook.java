@@ -11,25 +11,25 @@ public class TelephoneHook extends XC_MethodHook{
 
     private String getValue(String p) {
         XSharedPreferences  v  = new XSharedPreferences("com.example.id5hook","config");
-        String returnValue = v.getString(p, "");
-        if (returnValue == "") {
-            Log.d("benija", "getValue:" + p);
-        }
-        return returnValue;
+        return v.getString(p, "");
     }
 
     protected void afterHookedMethod(XC_MethodHook.MethodHookParam paramMethodHookParam) throws Throwable {
+
         String str = paramMethodHookParam.method.getName();
         if (str.equals("getNetworkType")) {
-            paramMethodHookParam.setResult(Integer.valueOf(4));
+            Log.d("benija", "getNetworkType");
+            paramMethodHookParam.setResult(4);
             return;
         }
         if (str.equals("getPhoneType")) {
-            paramMethodHookParam.setResult(Integer.valueOf(2));
+            Log.d("benija", "getPhoneType");
+            paramMethodHookParam.setResult(2);
             return;
         }
         if (str.equals("getSimState")) {
-            paramMethodHookParam.setResult(Integer.valueOf(5));
+            Log.d("benija", "getSimState");
+            paramMethodHookParam.setResult(5);
             return;
         }
         fixString(paramMethodHookParam, str);
@@ -40,6 +40,7 @@ public class TelephoneHook extends XC_MethodHook{
         fixBuildV("MANUFACTURER");
         fixBuildV("HARDWARE");
         fixBuildV("BRAND");
+        Log.d("benija", "Build.class:" +  Build.class.toString());
         XposedHelpers.setStaticObjectField(Build.class, "BOARD", "BOARD");
         XposedHelpers.setStaticObjectField(Build.class, "DEVICE", "DEVICE");
         XposedHelpers.setStaticObjectField(Build.class, "ID", "ID");
@@ -53,6 +54,8 @@ public class TelephoneHook extends XC_MethodHook{
         if (str != null && str.length() > 0) {
             XposedHelpers.setStaticObjectField(Build.class, paramString, str);
             Log.d("benija", "fixBuildV;" + paramString + "----" + str);
+        } else {
+            Log.e("benija", "fixBuildVFail;" + paramString + "----" + str);
         }
     }
 
@@ -62,7 +65,9 @@ public class TelephoneHook extends XC_MethodHook{
         String str = getValue(paramString);
         if (str != null && str.length() > 0) {
             paramMethodHookParam.setResult(str);
-            Log.d("benija", "fixString;" + paramString + "----" + str);
+            Log.d("benija", "fixStrings;" + paramString + "----" + str);
+        } else {
+            Log.e("benija", "fixStringFail;" + paramString + "----" + str);
         }
     }
 }

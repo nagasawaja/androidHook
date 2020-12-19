@@ -34,5 +34,29 @@ public class HttpApi extends NanoHTTPD {
         PreferencesUtil.getInstance().saveParam("getMacAddress", GenParams.getMac());
         PreferencesUtil.getInstance().saveParam("getBSSID", GenParams.getMac());
         PreferencesUtil.getInstance().saveParam("ro.config.low_ram", "false");
+        // android os build
+        /* 参考
+        12-16 19:55:50.987 2437-2437/com.netease.dwrg I/Xposed: fix MODEL to xiaomi 8
+        12-16 19:55:50.989 2437-2437/com.netease.dwrg I/Xposed: fix MANUFACTURER to xiaomi
+        12-16 19:55:50.990 2437-2437/com.netease.dwrg I/Xposed: fix HARDWARE to android_x86
+        12-16 19:55:50.991 2437-2437/com.netease.dwrg I/Xposed: fix BRAND to xiaomi
+         */
+        String MANUFACTURER = GenParams.getMANUFACTURER();
+        PreferencesUtil.getInstance().saveParam("MODEL", GenParams.getMODEL());
+        PreferencesUtil.getInstance().saveParam("MANUFACTURER", MANUFACTURER);
+        PreferencesUtil.getInstance().saveParam("HARDWARE", "android_x64");
+        PreferencesUtil.getInstance().saveParam("BRAND", MANUFACTURER);
+        PreferencesUtil.getInstance().saveParam("gsm.version.baseband", GenParams.getMODEM());
+        PreferencesUtil.getInstance().saveParam("gsm.version.ril-impl", MANUFACTURER + " RIL V3.0");
+        PreferencesUtil.getInstance().saveParam("getNetworkOperatorName", MANUFACTURER + "");
+        String NetworkOperator = GenParams.getNetworkOperator();
+        PreferencesUtil.getInstance().saveParam("getNetworkOperator", NetworkOperator);
+        PreferencesUtil.getInstance().saveParam("getSimOperator", NetworkOperator.replace("-", ""));
+        PreferencesUtil.getInstance().saveParam("ro.product.cpu.abilist64", "arm64-v8a");
+        PreferencesUtil.getInstance().saveParam("ro.product.cpu.abi", "arm64-v8a");
+        PreferencesUtil.getInstance().saveParam("ro.product.cpu.abilist", "arm64-v8a,armeabi-v7a,armeabi");
+        PreferencesUtil.getInstance().saveParam("ro.product.cpu.abilist32", "armeabi-v7a,armeabi");
+        PreferencesUtil.getInstance().saveParam("getSimCountryIso", "ISO 3166-2:CN");
+        PreferencesUtil.getInstance().saveParam("getNetworkCountryIso", GenParams.getNetworkOperatorName.get(NetworkOperator));
     }
 }
