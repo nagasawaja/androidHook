@@ -20,6 +20,7 @@ import android.net.NetworkInfo;
 
 public class XModule implements IXposedHookLoadPackage {
     public void fixNetwork(XC_LoadPackage.LoadPackageParam paramLoadPackageParam) {
+        Log.d("benija", "fixNetworkBegin");
         new XC_MethodHook() {
             protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
                 Log.d("benija", "fixNetwork:" + param1MethodHookParam.method.getName());
@@ -51,6 +52,7 @@ public class XModule implements IXposedHookLoadPackage {
         Log.d("benija", "begin:" + lpparam.packageName);
         String str = TelephonyManager.class.getName();
         final TelephoneHook telephoneHook = new TelephoneHook();
+        Log.d("benija", "loader:" + lpparam.classLoader.toString());
         XposedHelpers.findAndHookMethod(str, lpparam.classLoader, "getDeviceId", new Object[] { telephoneHook });
         XposedHelpers.findAndHookMethod(str, lpparam.classLoader, "getLine1Number", new Object[] { telephoneHook });
         XposedHelpers.findAndHookMethod(str, lpparam.classLoader, "getSimSerialNumber", new Object[] { telephoneHook });

@@ -23,38 +23,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // init SharedPreferences
-
         PreferencesUtil.getInstance().init(this);
         try {
             httpapi = new HttpApi(this);
-//            XposedBridge.log("onResumeHttp");
+            Log.d("benija", "onCreateMainActiveSuc");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("onResume", "WebServer start failed" + e.getMessage());
+            Log.e("benija", "onCreateMainActiveFail" + e.getMessage());
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("benija", "eeeeee");
-        String url = "http://www.beni.pub/collyMao/getIp";
-        OkHttpClient okHttpClient = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .build();
-        final Call call = okHttpClient.newCall(request);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Response response = call.execute();
-                    Log.d("benija", "run: " + response.body().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
+        Log.d("benija", "apiHookAppOnResume");
+//        String url = "http://www.beni.pub/ipp";
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//        final Request request = new Request.Builder()
+//                .url(url)
+//                .build();
+//        final Call call = okHttpClient.newCall(request);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Response response = call.execute();
+//                    Log.d("benija", "run: " + response.body().string());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
 }
