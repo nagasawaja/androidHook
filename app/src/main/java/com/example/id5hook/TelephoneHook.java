@@ -5,9 +5,13 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import android.os.Build;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import java.util.UUID;
+
 public class TelephoneHook extends XC_MethodHook{
+    public String uuidd = UUID.randomUUID().toString();
 
     private String getValue(String p) {
         XSharedPreferences  v  = new XSharedPreferences("com.example.id5hook","config");
@@ -18,35 +22,51 @@ public class TelephoneHook extends XC_MethodHook{
 
         String str = paramMethodHookParam.method.getName();
         if (str.equals("getNetworkType")) {
-            Log.d("benija", "getNetworkType");
-            paramMethodHookParam.setResult(4);
+            Log.d("benija", "fixStrings;" + "getNetworkType----" + TelephonyManager.NETWORK_TYPE_HSPAP);
+            paramMethodHookParam.setResult(TelephonyManager.NETWORK_TYPE_HSPAP); // set 3g
             return;
         }
         if (str.equals("getPhoneType")) {
-            Log.d("benija", "getPhoneType");
-            paramMethodHookParam.setResult(2);
+            Log.d("benija", "fixStrings;" + "getPhoneType----" + TelephonyManager.PHONE_TYPE_CDMA);
+            paramMethodHookParam.setResult(TelephonyManager.PHONE_TYPE_CDMA);
+//            paramMethodHookParam.setResult(2);
             return;
         }
         if (str.equals("getSimState")) {
-            Log.d("benija", "getSimState");
-            paramMethodHookParam.setResult(5);
+            Log.d("benija", "fixStrings;" + "getSimState----" + TelephonyManager.SIM_STATE_READY);
+            paramMethodHookParam.setResult(TelephonyManager.SIM_STATE_READY);
+//            paramMethodHookParam.setResult(5);
+            return;
+        }
+        if (str.equals("hasIccCard")) {
+            Log.d("benija", "fixStrings;" + "hasIccCard----" + true);
+            paramMethodHookParam.setResult(true);
+//            paramMethodHookParam.setResult(5);
             return;
         }
         fixString(paramMethodHookParam, str);
     }
 
     public void fixBuild() {
+        Log.d("benija", "fixBuild");
         fixBuildV("MODEL");
         fixBuildV("MANUFACTURER");
-        fixBuildV("HARDWARE");
         fixBuildV("BRAND");
-        Log.d("benija", "Build.class:" +  Build.class.toString());
-        XposedHelpers.setStaticObjectField(Build.class, "BOARD", "BOARD");
-        XposedHelpers.setStaticObjectField(Build.class, "DEVICE", "DEVICE");
-        XposedHelpers.setStaticObjectField(Build.class, "ID", "ID");
-        XposedHelpers.setStaticObjectField(Build.class, "PRODUCT", "PRODUCT");
-        XposedHelpers.setStaticObjectField(Build.class, "DISPLAY", "DISPLAY");
-        XposedHelpers.setStaticObjectField(Build.class, "FINGERPRINT", "FINGERPRINT");
+        fixBuildV("HARDWARE");
+        fixBuildV("BOARD");
+        fixBuildV("SERIAL");
+        fixBuildV("DEVICE");
+        fixBuildV("ID");
+        fixBuildV("PRODUCT");
+        fixBuildV("DISPLAY");
+        fixBuildV("FINGERPRINT");
+
+//        XposedHelpers.setStaticObjectField(Build.class, "BOARD", "BOARD");
+//        XposedHelpers.setStaticObjectField(Build.class, "DEVICE", "DEVICE");
+//        XposedHelpers.setStaticObjectField(Build.class, "ID", "ID");
+//        XposedHelpers.setStaticObjectField(Build.class, "PRODUCT", "PRODUCT");
+//        XposedHelpers.setStaticObjectField(Build.class, "DISPLAY", "DISPLAY");
+//        XposedHelpers.setStaticObjectField(Build.class, "FINGERPRINT", "FINGERPRINT");
     }
 
     public void fixBuildV(String paramString) {
@@ -58,8 +78,6 @@ public class TelephoneHook extends XC_MethodHook{
             Log.e("benija", "fixBuildVFail;" + paramString + "----" + str);
         }
     }
-
-
 
     public void fixString(XC_MethodHook.MethodHookParam paramMethodHookParam, String paramString) {
         String str = getValue(paramString);

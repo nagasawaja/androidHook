@@ -46,6 +46,14 @@ public class HttpApi extends NanoHTTPD {
         PreferencesUtil.getInstance().saveParam("MANUFACTURER", MANUFACTURER);
         PreferencesUtil.getInstance().saveParam("HARDWARE", "android_x64");
         PreferencesUtil.getInstance().saveParam("BRAND", MANUFACTURER);
+        PreferencesUtil.getInstance().saveParam("SERIAL", GenParams.randomBuildSerial());
+        PreferencesUtil.getInstance().saveParam("BOARD", "BOARD");
+        PreferencesUtil.getInstance().saveParam("DEVICE", "DEVICE");
+        PreferencesUtil.getInstance().saveParam("ID", "ID");
+        PreferencesUtil.getInstance().saveParam("PRODUCT", "PRODUCT");
+        PreferencesUtil.getInstance().saveParam("DISPLAY", "DISPLAY");
+        PreferencesUtil.getInstance().saveParam("FINGERPRINT", "FINGERPRINT");
+
         PreferencesUtil.getInstance().saveParam("gsm.version.baseband", GenParams.getMODEM());
         PreferencesUtil.getInstance().saveParam("gsm.version.ril-impl", MANUFACTURER + " RIL V3.0");
         PreferencesUtil.getInstance().saveParam("getNetworkOperatorName", MANUFACTURER + "");

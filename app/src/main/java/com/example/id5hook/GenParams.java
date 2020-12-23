@@ -24,6 +24,7 @@ public class GenParams {
         put("460-02", "中国移动");
         put("460-03", "中国联通");
     }};
+    private static Random random = new Random();
 
     public static String getDeviceId() {
         Random random = new Random();
@@ -177,6 +178,28 @@ public class GenParams {
     public static String getNetworkOperator() {
         int index = (int) (Math.random() * NetworkOperator.length);
         return NetworkOperator[index];
+    }
+
+    public static String randomBuildSerial() {
+        return randomString(randomInt(10, 20), true, false, true);
+    }
+
+    public static String randomString(int length, boolean lowEnglish, boolean upperEnglish, boolean number) {
+        String baseString = "";
+        if (lowEnglish) baseString += "abcdefghijklmnopqrstuvwxyz";
+        if (upperEnglish) baseString += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (number) baseString += "0123456789";
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(baseString.charAt(random.nextInt(baseString.length())));
+        }
+        return sb.toString();
+    }
+
+    public static int randomInt(int min, int max) {
+        if (min == max) return min;
+        return random.nextInt(max) + min;
     }
 
 }
