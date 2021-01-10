@@ -73,9 +73,9 @@ public class TelephoneHook extends XC_MethodHook{
         String str = getValue(paramString);
         if (str != null && str.length() > 0) {
             XposedHelpers.setStaticObjectField(Build.class, paramString, str);
-            Log.d("benija", "fixBuildV;" + paramString + "----" + str);
+            Log.d("benija", "fixStrings;" + paramString + "----" + str);
         } else {
-            Log.e("benija", "fixBuildVFail;" + paramString + "----" + str);
+            Log.e("benija", "fixStringFail;" + paramString + "----" + str);
         }
     }
 
@@ -86,6 +86,16 @@ public class TelephoneHook extends XC_MethodHook{
             Log.d("benija", "fixStrings;" + paramString + "----" + str);
         } else {
             Log.e("benija", "fixStringFail;" + paramString + "----" + str);
+        }
+    }
+
+    public void fixString2(XC_MethodHook.MethodHookParam paramMethodHookParam, String paramString) {
+        String str = getValue(paramString);
+        if (str != null && str.length() > 0) {
+            paramMethodHookParam.setResult(str);
+            Log.d("benija", "fffString;" + paramString + "----" + str);
+        } else {
+            Log.e("benija", "fffStringFail;" + paramString + "----" + str);
         }
     }
 }
