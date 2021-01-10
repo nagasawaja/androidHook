@@ -27,6 +27,7 @@ import android.net.NetworkInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
@@ -111,7 +112,16 @@ public class XModule implements IXposedHookLoadPackage {
              */
             @Override
             protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
-                telephoneHook.fixString2(param1MethodHookParam, "exec");
+                Log.d("benija", "exec:" + param1MethodHookParam.args[0]);
+                Process execRes = (Process) param1MethodHookParam.getResult();
+                Log.d("benija", "afterHookedMethod: " + execRes);
+                BufferedReader stdInput = new BufferedReader(new
+                        InputStreamReader(execRes.getInputStream()));
+                String s = null;
+                while ((s = stdInput.readLine()) != null) {
+                    Log.d("benija", "execRes:" + s);
+                }
+                param1MethodHookParam.setResult(execRes);
             }
         });
         // 修改位置信息 todo，暂时没用到不处理

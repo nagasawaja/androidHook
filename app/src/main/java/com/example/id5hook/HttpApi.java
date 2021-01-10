@@ -89,22 +89,7 @@ public class HttpApi extends NanoHTTPD {
 
         PreferencesUtil.getInstance().saveParam("getNetworkCountryIso", GenParams.getNetworkOperatorName.get(NetworkOperator));
 
-        try {
-            // 生成exec结果
-            // 输出结果是InputSteam
-            Process execRes = null;
-            execRes = Runtime.getRuntime().exec("pwd");
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(execRes.getInputStream()));
-            String s = null;
-            while ((s = stdInput.readLine()) != null) {
-                Log.d("benija", "execRes:" + s);
-            }
-            // 执行系统命令
-            PreferencesUtil.getInstance().saveParam("exec", execRes);
-        } catch (IOException e) {
-            Log.e("benija", "execResFail");
-        }
+
 
     }
 }

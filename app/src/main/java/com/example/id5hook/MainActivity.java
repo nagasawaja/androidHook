@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("benija", "apiHookAppOnResume");
-        try {
-            Process execRes = null;
-            execRes = Runtime.getRuntime().exec("pwd");
-
-            Log.d("benija", "onResume: " + execRes.getClass().getSimpleName());
-        } catch (IOException e) {
-            Log.e("benija", "execResFail");
-        }
+//        try {
+//            Process execRes = null;
+//            execRes = Runtime.getRuntime().exec("pwd");
+//
+//            Log.d("benija", "onResume: " + execRes.getClass().getSimpleName());
+//        } catch (IOException e) {
+//            Log.e("benija", "execResFail");
+//        }
 
 
 //        String url = "http://www.beni.pub/ipp";
