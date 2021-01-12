@@ -29,6 +29,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 public class XModule implements IXposedHookLoadPackage {
@@ -124,6 +126,69 @@ public class XModule implements IXposedHookLoadPackage {
                 param1MethodHookParam.setResult(execRes);
             }
         });
+
+        // 以下都是为了越过app对xposed的检测
+        XposedHelpers.findAndHookMethod(ClassLoader.class.getName(), lpparam.classLoader,"loadClass", String.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if(param.args != null && param.args[0] != null && param.args[0].toString().startsWith("de.robv.android.xposed")){
+                    // 改成一个不存在的类
+                    Log.d("benija", "loadClass1:" + param.args[0].toString());
+                    param.args[0] = "de.robv.android.ff7.loader";
+                }
+
+                super.beforeHookedMethod(param);
+            }
+        });
+        XposedHelpers.findAndHookMethod(StackTraceElement.class.getName(), lpparam.classLoader, "getClassName", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                String result = (String) param.getResult();
+                if (result != null){
+                    Log.d("benija", "loadClass2:" + result);
+                    if (result.contains("de.robv.android.xposed.")) {
+                        param.setResult("");
+                        // Log.i(tag, "替换了，字符串名称 " + result);
+                    }else if(result.contains("com.android.internal.os.ZygoteInit")){
+                        param.setResult("");
+                    }
+                }
+
+                super.afterHookedMethod(param);
+            }
+        });
+        XposedHelpers.findAndHookMethod(BufferedReader.class.getName(), lpparam.classLoader, "readLine", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                String result = (String) param1MethodHookParam.getResult();
+                if(result != null) {
+                    Log.d("benija", "loadClass3:" + result);
+                    if (result.equals("/system/bin/su")) {
+                        param1MethodHookParam.setResult("");
+                    }
+                }
+                super.afterHookedMethod(param1MethodHookParam);
+            }
+        });
+
+        XposedHelpers.findAndHookMethod(Method.class.getName(), lpparam.classLoader, "getModifiers", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                Method method = (Method)param1MethodHookParam.thisObject;
+                String method_name = method.getName();
+                Log.d("benija", "loadClass4:" + method_name);
+            }
+        });
+
+        // id5 暂时没用到这个
+        XposedHelpers.findAndHookMethod(Modifier.class.getName(), lpparam.classLoader, "isNative", int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param1fMethodHookParam) throws Throwable {
+                Log.d("benija", "loadClass5:" + Arrays.toString(param1fMethodHookParam.args));
+            }
+        });
+        // 以上都是为了越过app对xposed的检测
+
         // 修改位置信息 todo，暂时没用到不处理
         XposedHelpers.findAndHookMethod(LocationManager.class.getName(), lpparam.classLoader, "getLastKnownLocation", String.class,
                 new XC_MethodHook()
