@@ -20,9 +20,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         try {
             httpapi = new HttpApi(this);
+            Log.d("benija", "onCreateMainActiveSuc");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("benija", "WebServer start failed" + e.getMessage());
+            Log.e("benija", "onCreateMainActiveFail:" + e.getMessage());
         }
     }
 }
