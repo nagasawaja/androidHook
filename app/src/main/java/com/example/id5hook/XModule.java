@@ -55,7 +55,7 @@ public class XModule implements IXposedHookLoadPackage {
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
         if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName)) {
-            Log.d("benija", "fuckOther:" + lpparam.packageName);
+            // Log.d("benija", "fuckOther:" + lpparam.packageName);
             return;
         }
         Log.d("benija", "begin:" + lpparam.packageName);
@@ -65,7 +65,8 @@ public class XModule implements IXposedHookLoadPackage {
         telephoneHook.fixBuild();
         // 手机的主要信息
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getDeviceId", telephoneHook);
-        XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", lpparam.classLoader, "getDeviceId", telephoneHook);
+        XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
+//        XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", lpparam.classLoader, "getDeviceId", telephoneHook);
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getLine1Number", telephoneHook); // number
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getSimSerialNumber", telephoneHook); // simserial
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getSubscriberId", telephoneHook); // imsi

@@ -9,23 +9,35 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TelephoneHook extends XC_MethodHook{
-    public static Map<String, String> paramsMap = new HashMap<String, String>();
+    public static Map paramsMap = new HashMap<String, String>();
+    private  static final Map<String, String> rootDict;
+    static
+    {
+        rootDict = new HashMap<String, String>();
+        rootDict.put("/sbin/su","");
+        rootDict.put("/system/bin/su","");
+        rootDict.put("/system/xbin/su","");
+        rootDict.put("/data/local/xbin/su","");
+        rootDict.put("/data/local/bin/su","");
+        rootDict.put("/system/sd/xbin/su","");
+        rootDict.put("/system/bin/failsafe/su","");
+        rootDict.put("/data/local/su","");
+    }
+
     private String getValue(String p) {
         String returnValue = "";
         if (paramsMap.containsKey("getDeviceId")) {
-            returnValue = paramsMap.get(p);
+            returnValue = (String) paramsMap.get(p);
             Log.d("benija", "getValue1");
         } else {
             String jsonString = FileUtil.readString("/mnt/sdcard/benija.json", "utf-8");
             Gson gson = new Gson();
             paramsMap = gson.fromJson(jsonString, paramsMap.getClass());
-            returnValue = paramsMap.get(p);
+            returnValue = (String) paramsMap.get(p);
             Log.d("benija", "getValue2");
         }
 
@@ -63,7 +75,15 @@ public class TelephoneHook extends XC_MethodHook{
             paramMethodHookParam.setResult(true);
             return;
         }
-        fixString(paramMethodHookParam, str);
+        if(str.equals("exists")) {
+            // 设备是否root
+            if(rootDict.containsKey(paramMethodHookParam.thisObject.toString())) {
+                // contain key
+                paramMethodHookParam.setResult(Boolean.FALSE);
+                Log.d("benija", "newFileCheck1:" + paramMethodHookParam.thisObject.toString());
+            }
+            Log.d("benija", "newFileCheck2:" + paramMethodHookParam.thisObject.toString());
+        }
     }
 
     public void fixBuild() {
