@@ -3,8 +3,11 @@ package com.example.id5hook;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -86,20 +89,20 @@ public class TelephoneHook extends XC_MethodHook{
         }
     }
 
-    public void fixBuild() {
-        Log.d("benija", "fixBuild");
-        fixBuildV("MODEL");
-        fixBuildV("MANUFACTURER");
-        fixBuildV("BRAND");
-        fixBuildV("HARDWARE");
-        fixBuildV("BOARD");
-        fixBuildV("SERIAL");
-        fixBuildV("DEVICE");
-        fixBuildV("ID");
-        fixBuildV("PRODUCT");
-        fixBuildV("DISPLAY");
-        fixBuildV("FINGERPRINT");
-
+    public void fixBuild(final XC_LoadPackage.LoadPackageParam lpparam) {
+        Log.d("benija", "fixBuildBegin");
+        fixBuildV("MANUFACTURER", lpparam);
+        fixBuildV("BRAND", lpparam);
+        fixBuildV("HARDWARE", lpparam);
+        fixBuildV("BOARD", lpparam);
+        fixBuildV("SERIAL", lpparam);
+        fixBuildV("DEVICE", lpparam);
+        fixBuildV("ID", lpparam);
+        fixBuildV("PRODUCT", lpparam);
+        fixBuildV("DISPLAY", lpparam);
+        fixBuildV("FINGERPRINT", lpparam);
+        fixBuildV("MODEL", lpparam);
+        Log.d("benija", "fixBuildFinish");
 //        XposedHelpers.setStaticObjectField(Build.class, "BOARD", "BOARD");
 //        XposedHelpers.setStaticObjectField(Build.class, "DEVICE", "DEVICE");
 //        XposedHelpers.setStaticObjectField(Build.class, "ID", "ID");
@@ -108,10 +111,10 @@ public class TelephoneHook extends XC_MethodHook{
 //        XposedHelpers.setStaticObjectField(Build.class, "FINGERPRINT", "FINGERPRINT");
     }
 
-    public void fixBuildV(String paramString) {
+    public void fixBuildV(String paramString, final XC_LoadPackage.LoadPackageParam lpparam) {
         String str = getValue(paramString);
         if (str.length() > 0) {
-            XposedHelpers.setStaticObjectField(Build.class, paramString, str);
+            XposedHelpers.setStaticObjectField(android.os.Build.class, paramString, str);
             Log.d("benija", "fixStrings;" + paramString + "----" + str);
         } else {
             Log.e("benija", "fixStringFail;" + paramString + "----" + str);

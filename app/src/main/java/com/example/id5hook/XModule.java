@@ -3,6 +3,7 @@ package com.example.id5hook;
 import android.bluetooth.BluetoothAdapter;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -54,18 +55,19 @@ public class XModule implements IXposedHookLoadPackage {
     }
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName)) {
-            // Log.d("benija", "fuckOther:" + lpparam.packageName);
+//        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName) && !"com.android.settings".equals(lpparam.packageName)) {
+//            Log.d("benija", "fuckOther:" + lpparam.packageName);
+//            return;
+//        }
+        if("com.touchsprite.android".equals(lpparam.packageName) || "com.example.id5hook".equals(lpparam.packageName)) {
+            Log.d("benija", "fuckOther:" + lpparam.packageName);
             return;
         }
         Log.d("benija", "begin:" + lpparam.packageName);
         Log.d("benija", "loader:" + lpparam.classLoader.toString());
         final TelephoneHook telephoneHook = new TelephoneHook();
-        // 设定一些静态参数
-        telephoneHook.fixBuild();
         // 手机的主要信息
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getDeviceId", telephoneHook);
-        XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
 //        XposedHelpers.findAndHookMethod("com.android.internal.telephony.PhoneSubInfo", lpparam.classLoader, "getDeviceId", telephoneHook);
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getLine1Number", telephoneHook); // number
         XposedHelpers.findAndHookMethod(TelephonyManager.class.getName(), lpparam.classLoader, "getSimSerialNumber", telephoneHook); // simserial
@@ -164,8 +166,15 @@ public class XModule implements IXposedHookLoadPackage {
 //        XposedHelpers.findAndHookMethod(android.content.res.Resources.class.getName(), lpparam.classLoader, "getConfiguration", new XC_MethodHook() {
 //            @Override
 //            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                Log.d("benija", "getConfiguration:" + param1MethodHookParam.args[1]);
-//                telephoneHook.fixString2(param1MethodHookParam, (String) param1MethodHookParam.args[1]);
+//                // Log.d("benija", "getConfiguration:" + param1MethodHookParam.args[1]);
+//                Configuration configuration = ((Activity)param1MethodHookParam.thisObject).getResources().getConfiguration();
+////                Configuration configuration = ((Activity)param1MethodHookParam.getResult()).getResources().getConfiguration();
+//                configuration.mcc = 460;
+//                configuration.mnc = 2;
+//                configuration.screenHeightDp = 180;
+//                configuration.screenWidthDp = 320;
+//                param1MethodHookParam.setResult(configuration);
+//                Log.d("benija", "getConfiguration:");
 //            }
 //        });
         // 修改ANDROID_ID TODO
@@ -188,19 +197,32 @@ public class XModule implements IXposedHookLoadPackage {
 //                Log.d("benija", "native_get:" + str);
                 telephoneHook.fixString2(param1MethodHookParam, str);
             }
+
+            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable
+            {
+                String methodName = param.method.getName();
+                if (methodName.startsWith("get"))
+                {
+                    Log.d("benija", "hook systemProperties ------>");
+                    // 设定一些静态参数
+                    telephoneHook.fixBuild(lpparam);
+                }
+            }
         });
 
         // 貌似是在app创建前hook，但不知道为什么hook失败
 //        XposedHelpers.findAndHookMethod(Activity.class.getName(), lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-//            protected void beforeHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                afterHookedMethod(param1MethodHookParam);
-//                telephoneHook.fixBuild();
+//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+//                Log.d("benija", "a33333333");
 //                Configuration configuration = ((Activity)param1MethodHookParam.thisObject).getResources().getConfiguration();
 //                configuration.mcc = 460;
 //                configuration.mnc = 2;
-//                XModule.this.fixNetwork(lpparam);
+//                configuration.screenHeightDp = 180;
+//                configuration.screenWidthDp = 320;
+//                param1MethodHookParam.setResult(configuration);
 //            }
 //        });
 
+        XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
     }
 }
