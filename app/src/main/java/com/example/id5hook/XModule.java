@@ -55,14 +55,14 @@ public class XModule implements IXposedHookLoadPackage {
     }
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-//        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName) && !"com.android.settings".equals(lpparam.packageName)) {
-//            Log.d("benija", "fuckOther:" + lpparam.packageName);
-//            return;
-//        }
-        if("com.touchsprite.android".equals(lpparam.packageName) || "com.example.id5hook".equals(lpparam.packageName)) {
+        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName) && !"com.android.settings".equals(lpparam.packageName)) {
             Log.d("benija", "fuckOther:" + lpparam.packageName);
             return;
         }
+//        if("com.touchsprite.android".equals(lpparam.packageName) || "com.example.id5hook".equals(lpparam.packageName)) {
+//            Log.d("benija", "fuckOther:" + lpparam.packageName);
+//            return;
+//        }
         Log.d("benija", "begin:" + lpparam.packageName);
         Log.d("benija", "loader:" + lpparam.classLoader.toString());
         final TelephoneHook telephoneHook = new TelephoneHook();

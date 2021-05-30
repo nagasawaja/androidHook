@@ -35,13 +35,13 @@ public class TelephoneHook extends XC_MethodHook{
         String returnValue = "";
         if (paramsMap.containsKey("getDeviceId")) {
             returnValue = (String) paramsMap.get(p);
-            Log.d("benija", "getValue1");
+//            Log.d("benija", "getValue1");
         } else {
             String jsonString = FileUtil.readString("/mnt/sdcard/benija.json", "utf-8");
             Gson gson = new Gson();
             paramsMap = gson.fromJson(jsonString, paramsMap.getClass());
             returnValue = (String) paramsMap.get(p);
-            Log.d("benija", "getValue2");
+            Log.d("benija", "setJsonToParamsMapSuc");
         }
 
         if (returnValue == null || returnValue == "") {
@@ -85,7 +85,7 @@ public class TelephoneHook extends XC_MethodHook{
                 paramMethodHookParam.setResult(Boolean.FALSE);
                 Log.d("benija", "newFileCheck1:" + paramMethodHookParam.thisObject.toString());
             }
-            Log.d("benija", "newFileCheck2:" + paramMethodHookParam.thisObject.toString());
+//            Log.d("benija", "newFileCheck2:" + paramMethodHookParam.thisObject.toString());
         }
     }
 

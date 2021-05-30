@@ -75,18 +75,22 @@ public class HttpApi extends NanoHTTPD {
         12-16 19:55:50.991 2437-2437/com.netease.dwrg I/Xposed: fix BRAND to xiaomi
          */
         // 参考 https://blog.csdn.net/ioiol/article/details/45535601/
+        // 参考2 https://blog.csdn.net/Small_Lee/article/details/50550048
         String MANUFACTURER = GenParams.getMANUFACTURER();
-        paramsMap.put("MODEL", GenParams.getMODEL()); // suc
+        String SERIAL = MANUFACTURER +  GenParams.randomString(4, false, false, true);
+        String DISPLAY = GenParams.randomString(6, false, false, true);
+        String HARDWARE = MANUFACTURER +  GenParams.randomString(4, false, false, true);
+        paramsMap.put("MODEL", GenParams.getChinese() + GenParams.randomString(4, false, false, true)); // suc
         paramsMap.put("MANUFACTURER", MANUFACTURER); // suc
-        paramsMap.put("HARDWARE", "android_x64"); // suc
+        paramsMap.put("HARDWARE", HARDWARE); // suc
         paramsMap.put("BRAND", MANUFACTURER); // suc
-        paramsMap.put("SERIAL", GenParams.randomBuildSerial()); // suc
-        paramsMap.put("BOARD", "cepheus"); // notSure
-        paramsMap.put("DEVICE", "cepheus"); // notSure
-        paramsMap.put("ID", "QKQ1.190825.002"); // notSure
-        paramsMap.put("PRODUCT", "cepheus"); // notSure
-        paramsMap.put("DISPLAY", "QKQ1.190825.002 test-keys"); // notSure
-        paramsMap.put("FINGERPRINT", "Xiaomi/cepheus/cepheus:10/QKQ1.190825.002/20.12.9:user/release-keys"); // notSure
+        paramsMap.put("SERIAL", SERIAL); // suc
+        paramsMap.put("BOARD", MANUFACTURER + GenParams.randomString(6, true, false, true)); // notSure
+        paramsMap.put("DEVICE", GenParams.getMODEL()); // notSure
+        paramsMap.put("ID", GenParams.randomBuildSerial()); // notSure
+        paramsMap.put("PRODUCT", GenParams.getMODEL()); // notSure
+        paramsMap.put("DISPLAY", "QKQ1."+DISPLAY+".002"); // notSure
+        paramsMap.put("FINGERPRINT", MANUFACTURER + "/"+SERIAL+"/"+SERIAL+":10/QKQ1."+DISPLAY+".002/20."+GenParams.randomString(2, false, false, true)+"."+GenParams.randomString(1, false, false, true)+":user/release-keys"); // notSure
 
         paramsMap.put("gsm.version.baseband", GenParams.getMODEM()); // notSure
         paramsMap.put("gsm.version.ril-impl", MANUFACTURER + " RIL V3.0"); // notSure
@@ -95,8 +99,9 @@ public class HttpApi extends NanoHTTPD {
         // MCC+MNC(mobile country code + mobile network code)注意：仅当用户已在网络注册时有效,在CDMA网络中结果也许不可靠。
         paramsMap.put("getNetworkOperator", NetworkOperator); // notSure
 
-        paramsMap.put("ro.product.cpu.abilist64", "arm64-v8a"); // notSure
+        paramsMap.put("ro.product.cpu.abilist64", "arm64-v8a,armeabi"); // notSure
         paramsMap.put("ro.product.cpu.abi", "arm64-v8a"); // notSure
+        paramsMap.put("ro.product.cpu.abi2", "arm64"); // notSure
         paramsMap.put("ro.product.cpu.abilist", "arm64-v8a,armeabi-v7a,armeabi"); // notSure
         paramsMap.put("ro.product.cpu.abilist32", "armeabi-v7a,armeabi"); // notSure
 
