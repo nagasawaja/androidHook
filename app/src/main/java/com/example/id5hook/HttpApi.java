@@ -78,7 +78,7 @@ public class HttpApi extends NanoHTTPD {
         // 参考2 https://blog.csdn.net/Small_Lee/article/details/50550048
         String MANUFACTURER = GenParams.getMANUFACTURER();
         String SERIAL = MANUFACTURER +  GenParams.randomString(4, false, false, true);
-        String DISPLAY = GenParams.randomString(6, false, false, true);
+        String DISPLAY = "QKQ1." + GenParams.randomString(6, false, false, true)  + ".002";
         String HARDWARE = MANUFACTURER +  GenParams.randomString(4, false, false, true);
         paramsMap.put("MODEL", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // suc
         paramsMap.put("MANUFACTURER", MANUFACTURER); // suc
@@ -89,8 +89,8 @@ public class HttpApi extends NanoHTTPD {
         paramsMap.put("DEVICE", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // notSure
         paramsMap.put("ID", GenParams.randomBuildSerial()); // notSure
         paramsMap.put("PRODUCT", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // notSure
-        paramsMap.put("DISPLAY", "QKQ1."+DISPLAY+".002"); // notSure
-        paramsMap.put("FINGERPRINT", MANUFACTURER + "/"+SERIAL+"/"+SERIAL+":10/QKQ1."+DISPLAY+".002/20."+GenParams.randomString(2, false, false, true)+"."+GenParams.randomString(1, false, false, true)+":user/release-keys"); // notSure
+        paramsMap.put("DISPLAY", DISPLAY); // notSure
+        paramsMap.put("FINGERPRINT", "Xiaomi/cepheus/cepheus:10/"+DISPLAY+"/20."+GenParams.randomString(2, false, false, true)+"."+GenParams.randomString(1, false, false, true)+":user/release-keys"); // notSure
         paramsMap.put("gsm.version.baseband", GenParams.getMODEM()); // notSure
         paramsMap.put("gsm.version.ril-impl", MANUFACTURER + " RIL V3.0"); // notSure
         // 按照字母次序的current registered operator(当前已注册的用户)的名字,  注意：仅当用户已在网络注册时有效 ,在CDMA网络中结果也许不可靠
