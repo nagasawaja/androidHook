@@ -15,7 +15,7 @@ import external.org.apache.commons.lang3.StringUtils;
 
 public class GenParams {
     public String data;
-    public static String[]MODEL = {"ZHONGXING", "GELI", "XIAOMI", "MEIZU", "HUAWEI", "GOOGLE", "SONY", "OPPO", "SAMSUNG", "LG", "ZTE", "VIVO", "HONOR", "ONEPLUS", "HTC", "NUBIA", "HISENSE", "lenovo", "leshi", "锤子", "oneplus"};
+    public static String[]MODEL = {"XIAOMI", "MEIZU", "HUAWEI", "SONY", "OPPO", "SAMSUNG", "LG", "ZTE", "VIVO", "HONOR", "ONEPLUS", "NUBIA", "魅族", "HISENSE", "lenovo", "leshi", "锤子", "oneplus", "小米","红米","黑鲨","华为","三星","索尼","音乐手机","荣耀"};
     public static String[]MODEM = {"21C20B088S000C000,21C20B088S000C000","G973USQS4ETJ2","21C20B388S000C000,21C20B388S000C000","G970USQS4ETJ2","21C60B269S007C000,21C60B269S007C000","8974-AAAAANAZQ-10270086-81","M8940_41.00.01.163R SURF_NA_CA_CUST","21C20B526S000C000,21C20B526S000C000","S727VLUDS4ARF2","N975FXXS6DTK8,N975FXXS6DTK8","J530FXXS7CTF1,J530FXXS7CTF1","MPSS.AT.3.1-00777-SDM660_GEN_PACK-1.290939.2.294155.1","ztesh6735_65t_m_lwg_dsds","MPSS.JO.3.1.c5-00003-8937_GENNS_PACK-1_V048","M_V3_P10,M_V3_P10","A217FXXU4BTL1,A217FXXU4BTL1","MOLY.LR12A.R3.MP.V101.3,MOLY.LR12A.R3.MP.V101.3","G973USQS4ETJ2","N975FXXS6DTK8,N975FXXS6DTK8", "21C20B369S007C000,21C20B369S007C000"};
     public static String[]NetworkOperator = {"460-00", "460-01", "460-02", "460-03"};
     public static HashMap<String, String> getNetworkOperatorName = new HashMap<String, String>(){{

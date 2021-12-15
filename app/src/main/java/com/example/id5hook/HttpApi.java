@@ -80,18 +80,17 @@ public class HttpApi extends NanoHTTPD {
         String SERIAL = MANUFACTURER +  GenParams.randomString(4, false, false, true);
         String DISPLAY = GenParams.randomString(6, false, false, true);
         String HARDWARE = MANUFACTURER +  GenParams.randomString(4, false, false, true);
-        paramsMap.put("MODEL", GenParams.getChinese() + GenParams.randomString(4, false, false, true)); // suc
+        paramsMap.put("MODEL", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // suc
         paramsMap.put("MANUFACTURER", MANUFACTURER); // suc
         paramsMap.put("HARDWARE", HARDWARE); // suc
         paramsMap.put("BRAND", MANUFACTURER); // suc
         paramsMap.put("SERIAL", SERIAL); // suc
         paramsMap.put("BOARD", MANUFACTURER + GenParams.randomString(6, true, false, true)); // notSure
-        paramsMap.put("DEVICE", GenParams.getMODEL()); // notSure
+        paramsMap.put("DEVICE", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // notSure
         paramsMap.put("ID", GenParams.randomBuildSerial()); // notSure
-        paramsMap.put("PRODUCT", GenParams.getMODEL()); // notSure
+        paramsMap.put("PRODUCT", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // notSure
         paramsMap.put("DISPLAY", "QKQ1."+DISPLAY+".002"); // notSure
         paramsMap.put("FINGERPRINT", MANUFACTURER + "/"+SERIAL+"/"+SERIAL+":10/QKQ1."+DISPLAY+".002/20."+GenParams.randomString(2, false, false, true)+"."+GenParams.randomString(1, false, false, true)+":user/release-keys"); // notSure
-
         paramsMap.put("gsm.version.baseband", GenParams.getMODEM()); // notSure
         paramsMap.put("gsm.version.ril-impl", MANUFACTURER + " RIL V3.0"); // notSure
         // 按照字母次序的current registered operator(当前已注册的用户)的名字,  注意：仅当用户已在网络注册时有效 ,在CDMA网络中结果也许不可靠

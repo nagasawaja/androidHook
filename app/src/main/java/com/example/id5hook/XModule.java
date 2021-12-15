@@ -55,7 +55,7 @@ public class XModule implements IXposedHookLoadPackage {
     }
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName) && !"com.android.settings".equals(lpparam.packageName)) {
+        if(!"com.netease.dwrg".equals(lpparam.packageName) && !"com.netease.pes".equals(lpparam.packageName) && !"com.android.settings".equals(lpparam.packageName) && !"com.axieinfinity.origin".equals(lpparam.packageName) ) {
             Log.d("benija", "fuckOther:" + lpparam.packageName);
             return;
         }
