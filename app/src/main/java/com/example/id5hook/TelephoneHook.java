@@ -22,6 +22,9 @@ public class TelephoneHook extends XC_MethodHook{
     {
         rootDict = new HashMap<String, String>();
         rootDict.put("/sbin/su","");
+        rootDict.put("/proc/cpuinfo","");
+        rootDict.put("/proc/tty/drivers","");
+        rootDict.put("/system/app/Superuser.apk","");
         rootDict.put("/system/bin/su","");
         rootDict.put("/system/xbin/su","");
         rootDict.put("/data/local/xbin/su","");
@@ -78,15 +81,62 @@ public class TelephoneHook extends XC_MethodHook{
             paramMethodHookParam.setResult(true);
             return;
         }
+        if (str.equals("getNetworkOperator")) {
+            return;
+        }
+        if (str.equals("getSimOperator")) {
+            return;
+        }
+        if (str.equals("getDeviceId")) {
+            return;
+        }
+        if (str.equals("getBSSID")) {
+            fixString2(paramMethodHookParam, "getBSSID");
+            return;
+        }
+        if (str.equals("getSSID")) {
+            fixString2(paramMethodHookParam, "getSSID");
+            return;
+        }
+        if (str.equals("getSubscriberId")) {
+            fixString2(paramMethodHookParam, "getSubscriberId");
+            return;
+        }
+        if (str.equals("getMacAddress")) {
+            fixString2(paramMethodHookParam, "getSubscriberId");
+            return;
+        }
         if(str.equals("exists")) {
+            if (paramMethodHookParam.thisObject.toString().contains("com.netease.dwrg")) {
+                return;
+            }
+
             // 设备是否root
             if(rootDict.containsKey(paramMethodHookParam.thisObject.toString())) {
                 // contain key
                 paramMethodHookParam.setResult(Boolean.FALSE);
                 Log.d("benija", "newFileCheck1:" + paramMethodHookParam.thisObject.toString());
+                return;
             }
-//            Log.d("benija", "newFileCheck2:" + paramMethodHookParam.thisObject.toString());
+
+//            if (paramMethodHookParam.thisObject.toString().contains("/system/etc/security/cacerts")) {
+//                paramMethodHookParam.setResult(Boolean.TRUE);
+//                Log.d("benija", "newFileCheck3:" + paramMethodHookParam.thisObject.toString());
+//                return;
+//            }
+//
+//            if (paramMethodHookParam.thisObject.toString().contains("system")) {
+//                paramMethodHookParam.setResult(Boolean.FALSE);
+//                Log.d("benija", "newFileCheck2:" + paramMethodHookParam.thisObject.toString());
+//                return;
+//            }
+
+            Log.d("benija", "strrr:" + paramMethodHookParam.thisObject.toString());
+            Log.d("benija", "strrr2222:" + paramMethodHookParam.getResult().toString());
+            return;
         }
+        Log.d("benija", "strxxx:" + str);
+        Log.d("benija", "strxxx2:" + paramMethodHookParam.getResult().toString());
     }
 
     public void fixBuild(final XC_LoadPackage.LoadPackageParam lpparam) {

@@ -84,6 +84,8 @@ public class HttpApi extends NanoHTTPD {
         paramsMap.put("MANUFACTURER", MANUFACTURER); // suc
         paramsMap.put("HARDWARE", HARDWARE); // suc
         paramsMap.put("BRAND", MANUFACTURER); // suc
+        paramsMap.put("ro.build.id", GenParams.randomString(6, false, true, true)); // suc
+        paramsMap.put("ro.build.version.release", "13.1"); // suc
         paramsMap.put("SERIAL", SERIAL); // suc
         paramsMap.put("BOARD", MANUFACTURER + GenParams.randomString(6, true, false, true)); // notSure
         paramsMap.put("DEVICE", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // notSure

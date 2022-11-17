@@ -87,13 +87,6 @@ public class XModule implements IXposedHookLoadPackage {
         XposedHelpers.findAndHookMethod(WifiInfo.class.getName(), lpparam.classLoader, "getMacAddress", telephoneHook); // wifimac
         XposedHelpers.findAndHookMethod(WifiInfo.class.getName(), lpparam.classLoader, "getSSID", telephoneHook); // ssid
         XposedHelpers.findAndHookMethod(WifiInfo.class.getName(), lpparam.classLoader, "getBSSID", telephoneHook); // getBSSID
-        // 暂时没发现用到 todo
-//        XposedHelpers.findAndHookMethod(java.net.NetworkInterface.class.getName(),lpparam.classLoader, "getHardwareAddress", new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
-//                Log.d("benija", "getHardwareAddress:" + param1MethodHookParam.toString());
-//            }
-//        });
         // 修改CDMA制式手机的基站信息
         XposedHelpers.findAndHookMethod(android.telephony.cdma.CdmaCellLocation.class.getName(), lpparam.classLoader, "getBaseStationLatitude", telephoneHook);
         XposedHelpers.findAndHookMethod(android.telephony.cdma.CdmaCellLocation.class.getName(), lpparam.classLoader, "getBaseStationLongitude", telephoneHook);
@@ -111,16 +104,20 @@ public class XModule implements IXposedHookLoadPackage {
              */
             @Override
             protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
-                Log.d("benija", "exec:" + param1MethodHookParam.args[0]);
+                for(int i=0; i<param1MethodHookParam.args.length; i++) {
+                    Log.d("benija", "exec:" + param1MethodHookParam.args[i]);
+                }
                 Process execRes = (Process) param1MethodHookParam.getResult();
-                Log.d("benija", "afterHookedMethod: " + execRes);
+//                Log.d("benija", "afterHookedMethod: " + execRes.getOutputStream().toString());
+//                Log.d("benija", "afterHookedMethod: " + execRes.getInputStream().toString());
+                Log.d("benija", "afterHookedMethod: " + execRes.toString());
                 BufferedReader stdInput = new BufferedReader(new
                         InputStreamReader(execRes.getInputStream()));
                 String s = null;
-                while ((s = stdInput.readLine()) != null) {
-                    Log.d("benija", "execRes:" + s);
-                }
-                param1MethodHookParam.setResult(execRes);
+//                while ((s = stdInput.readLine()) != null) {
+//                    Log.d("benija", "execRes:" + s);
+//                }
+                param1MethodHookParam.setResult(null);
             }
         });
         // 修改位置信息 todo，暂时没用到不处理
@@ -137,6 +134,54 @@ public class XModule implements IXposedHookLoadPackage {
         // 修改GSM制式手机的基站信息
         XposedHelpers.findAndHookMethod(android.telephony.gsm.GsmCellLocation.class.getName(), lpparam.classLoader, "getLac", telephoneHook);
         XposedHelpers.findAndHookMethod(android.telephony.gsm.GsmCellLocation.class.getName(), lpparam.classLoader, "getCid", telephoneHook);
+
+        // 修改ANDROID_ID TODO
+        XposedHelpers.findAndHookMethod(Settings.Secure.class.getName(), lpparam.classLoader, "getString", ContentResolver.class, String.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+//                Log.d("benija", "getString:" + param1MethodHookParam.args[1]);
+                telephoneHook.fixString2(param1MethodHookParam, (String) param1MethodHookParam.args[1]);
+            }
+        });
+
+        // 下面这个get是native_get的上一层函数，native_get是获取更底层的,用get也可以，不过hook native_get更加合适
+        // XposedBridge.hookAllMethods(XposedHelpers.findClass("android.os.SystemProperties", lpparam.classLoader), "get", telephoneHook);
+        // 为了防止某些APP跳过Build类 而直接使用SystemProperties.native_get获得参数
+        // todo
+        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                String str = (String) param1MethodHookParam.args[0];
+//                Log.d("benija", "native_get:" + str);
+                telephoneHook.fixString2(param1MethodHookParam, str);
+            }
+
+            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable
+            {
+                String methodName = param.method.getName();
+                if (methodName.startsWith("get"))
+                {
+                    Log.d("benija", "hook systemProperties ------>");
+                    // 设定一些静态参数
+                    telephoneHook.fixBuild(lpparam);
+                }
+            }
+        });
+
+        XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
+
+        // 貌似是在app创建前hook，但不知道为什么hook失败
+//        XposedHelpers.findAndHookMethod(Activity.class.getName(), lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+//                Log.d("benija", "a33333333");
+//                Configuration configuration = ((Activity)param1MethodHookParam.thisObject).getResources().getConfiguration();
+//                configuration.mcc = 460;
+//                configuration.mnc = 2;
+//                configuration.screenHeightDp = 180;
+//                configuration.screenWidthDp = 320;
+//                param1MethodHookParam.setResult(configuration);
+//            }
+//        });
 
         // 此处模拟正常用户的APP列表 其中随机的增加和删除一些常用APP 以达到每个手机的APP有很大的随意性和合理性 TODO
 //        XposedHelpers.findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getInstalledPackages", int.class, new XC_MethodHook() {
@@ -177,49 +222,11 @@ public class XModule implements IXposedHookLoadPackage {
 //                Log.d("benija", "getConfiguration:");
 //            }
 //        });
-        // 修改ANDROID_ID TODO
-        XposedHelpers.findAndHookMethod(Settings.Secure.class.getName(), lpparam.classLoader, "getString", ContentResolver.class, String.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                Log.d("benija", "getString:" + param1MethodHookParam.args[1]);
-                telephoneHook.fixString2(param1MethodHookParam, (String) param1MethodHookParam.args[1]);
-            }
-        });
-
-        // 下面这个get是native_get的上一层函数，native_get是获取更底层的,用get也可以，不过hook native_get更加合适
-        // XposedBridge.hookAllMethods(XposedHelpers.findClass("android.os.SystemProperties", lpparam.classLoader), "get", telephoneHook);
-        // 为了防止某些APP跳过Build类 而直接使用SystemProperties.native_get获得参数
-        // todo
-        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-                String str = (String) param1MethodHookParam.args[0];
-//                Log.d("benija", "native_get:" + str);
-                telephoneHook.fixString2(param1MethodHookParam, str);
-            }
-
-            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable
-            {
-                String methodName = param.method.getName();
-                if (methodName.startsWith("get"))
-                {
-                    Log.d("benija", "hook systemProperties ------>");
-                    // 设定一些静态参数
-                    telephoneHook.fixBuild(lpparam);
-                }
-            }
-        });
-
-        // 貌似是在app创建前hook，但不知道为什么hook失败
-//        XposedHelpers.findAndHookMethod(Activity.class.getName(), lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                Log.d("benija", "a33333333");
-//                Configuration configuration = ((Activity)param1MethodHookParam.thisObject).getResources().getConfiguration();
-//                configuration.mcc = 460;
-//                configuration.mnc = 2;
-//                configuration.screenHeightDp = 180;
-//                configuration.screenWidthDp = 320;
-//                param1MethodHookParam.setResult(configuration);
+        // 暂时没发现用到 todo
+//        XposedHelpers.findAndHookMethod(java.net.NetworkInterface.class.getName(),lpparam.classLoader, "getHardwareAddress", new XC_MethodHook() {
+//            @Override
+//            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
+//                Log.d("benija", "getHardwareAddress:" + param1MethodHookParam.toString());
 //            }
 //        });
 
