@@ -118,25 +118,7 @@ public class TelephoneHook extends XC_MethodHook{
                 Log.d("benija", "newFileCheck1:" + paramMethodHookParam.thisObject.toString());
                 return;
             }
-
-//            if (paramMethodHookParam.thisObject.toString().contains("/system/etc/security/cacerts")) {
-//                paramMethodHookParam.setResult(Boolean.TRUE);
-//                Log.d("benija", "newFileCheck3:" + paramMethodHookParam.thisObject.toString());
-//                return;
-//            }
-//
-//            if (paramMethodHookParam.thisObject.toString().contains("system")) {
-//                paramMethodHookParam.setResult(Boolean.FALSE);
-//                Log.d("benija", "newFileCheck2:" + paramMethodHookParam.thisObject.toString());
-//                return;
-//            }
-
-            Log.d("benija", "strrr:" + paramMethodHookParam.thisObject.toString());
-            Log.d("benija", "strrr2222:" + paramMethodHookParam.getResult().toString());
-            return;
         }
-        Log.d("benija", "strxxx:" + str);
-        Log.d("benija", "strxxx2:" + paramMethodHookParam.getResult().toString());
     }
 
     public void fixBuild(final XC_LoadPackage.LoadPackageParam lpparam) {

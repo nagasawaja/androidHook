@@ -108,15 +108,10 @@ public class XModule implements IXposedHookLoadPackage {
                     Log.d("benija", "exec:" + param1MethodHookParam.args[i]);
                 }
                 Process execRes = (Process) param1MethodHookParam.getResult();
-//                Log.d("benija", "afterHookedMethod: " + execRes.getOutputStream().toString());
-//                Log.d("benija", "afterHookedMethod: " + execRes.getInputStream().toString());
                 Log.d("benija", "afterHookedMethod: " + execRes.toString());
                 BufferedReader stdInput = new BufferedReader(new
                         InputStreamReader(execRes.getInputStream()));
                 String s = null;
-//                while ((s = stdInput.readLine()) != null) {
-//                    Log.d("benija", "execRes:" + s);
-//                }
                 param1MethodHookParam.setResult(null);
             }
         });
@@ -169,7 +164,6 @@ public class XModule implements IXposedHookLoadPackage {
         });
 
         XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
-
         // 貌似是在app创建前hook，但不知道为什么hook失败
 //        XposedHelpers.findAndHookMethod(Activity.class.getName(), lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 //            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
