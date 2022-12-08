@@ -80,7 +80,7 @@ public class HttpApi extends NanoHTTPD {
         String SERIAL = MANUFACTURER +  GenParams.randomString(4, false, false, true);
         String DISPLAY = "QKQ1." + GenParams.randomString(6, false, false, true)  + ".002";
         String HARDWARE = MANUFACTURER +  GenParams.randomString(4, false, false, true);
-        paramsMap.put("MODEL", GenParams.getChinese() + GenParams.getChinese() + GenParams.getChinese() + "的" + MANUFACTURER); // suc
+        paramsMap.put("MODEL", GenParams.randomString(6, false, false, true) + "'" + MANUFACTURER); // suc
         paramsMap.put("MANUFACTURER", MANUFACTURER); // suc
         paramsMap.put("HARDWARE", HARDWARE); // suc
         paramsMap.put("BRAND", MANUFACTURER); // suc

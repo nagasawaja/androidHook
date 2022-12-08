@@ -115,6 +115,17 @@ public class XModule implements IXposedHookLoadPackage {
                 param1MethodHookParam.setResult(null);
             }
         });
+//        XposedHelpers.findAndHookMethod(Runtime.class.getName(), lpparam.classLoader, "exec", String[].class, new XC_MethodHook() {
+//            @Override
+//            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws  Throwable {
+//                String[] sArray = (String[]) param1MethodHookParam.args[0];
+//                if (sArray[0].equals("/system/xbin/which")) {
+//                    // param1MethodHookParam.args = null;
+//                }
+//                Log.d("benija", "execStringArray:" + Arrays.toString(sArray));
+//            }
+//        });
+
         // 修改位置信息 todo，暂时没用到不处理
         XposedHelpers.findAndHookMethod(LocationManager.class.getName(), lpparam.classLoader, "getLastKnownLocation", String.class,
                 new XC_MethodHook()
@@ -163,7 +174,32 @@ public class XModule implements IXposedHookLoadPackage {
             }
         });
 
+//        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, new XC_MethodHook() {
+//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+//                String str = (String) param1MethodHookParam.args[0];
+//                if(param1MethodHookParam.args[0].equals("ro.bootloader2") || param1MethodHookParam.args[0].equals("ro.bootmode2") ||
+//                        param1MethodHookParam.args[0].equals("init.svc.qemud") || param1MethodHookParam.args[0].equals("init.svc.qemu-props") || param1MethodHookParam.args[0].equals("qemu.hw.mainkeys")
+//                        || param1MethodHookParam.args[0].equals("qemu.sf.fake_camera") || param1MethodHookParam.args[0].equals("qemu.sf.lcd_density") || param1MethodHookParam.args[0].equals("ro.kernel.android.qemud")
+//                        || param1MethodHookParam.args[0].equals("ro.kernel.qemu.gles")
+//                ) {
+//                    param1MethodHookParam.setResult(null);
+//                }
+//                Log.d("benija", "SystemPropertiesget----" + str + "----" + param1MethodHookParam.getResult());
+//            }
+//        });
+
+//        XposedHelpers.findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getInstallerPackageName", String.class, new XC_MethodHook() {
+//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+//                String sss = (String) param1MethodHookParam.args[0];
+//                if (sss.equals("com.android.flysilkworm") || sss.equals("com.android.coreservice") || sss.equals("com.cyanogenmod.filemanager")) {
+//                     param1MethodHookParam.setThrowable(new Exception("unknow"));
+//                }
+//                Log.d("benija", "getInstalledPackages----" + sss + "----" + param1MethodHookParam.getResult());
+//            }
+//        });
+
         XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
+        Log.d("benija", "init xposed finish");
         // 貌似是在app创建前hook，但不知道为什么hook失败
 //        XposedHelpers.findAndHookMethod(Activity.class.getName(), lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 //            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
@@ -224,6 +260,6 @@ public class XModule implements IXposedHookLoadPackage {
 //            }
 //        });
 
-        XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
+
     }
 }
