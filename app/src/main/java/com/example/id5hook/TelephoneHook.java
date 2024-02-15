@@ -22,7 +22,7 @@ public class TelephoneHook extends XC_MethodHook{
     {
         rootDict = new HashMap<String, String>();
         rootDict.put("/sbin/su","");
-        rootDict.put("/proc/cpuinfo","");
+//        rootDict.put("/proc/cpuinfo","");
         rootDict.put("/proc/tty/drivers","");
         rootDict.put("/system/app/Superuser.apk","");
         rootDict.put("/system/bin/su","");
@@ -38,7 +38,6 @@ public class TelephoneHook extends XC_MethodHook{
         String returnValue = "";
         if (paramsMap.containsKey("getDeviceId")) {
             returnValue = (String) paramsMap.get(p);
-//            Log.d("benija", "getValue1");
         } else {
             String jsonString = FileUtil.readString("/mnt/sdcard/benija.json", "utf-8");
             Gson gson = new Gson();
@@ -47,7 +46,7 @@ public class TelephoneHook extends XC_MethodHook{
             Log.d("benija", "setJsonToParamsMapSuc");
         }
 
-        if (returnValue == null || returnValue == "") {
+        if (returnValue == null || returnValue.equals("")) {
             Log.d("benija", "getValue:" + p);
             returnValue = "";
         }
@@ -103,7 +102,7 @@ public class TelephoneHook extends XC_MethodHook{
             return;
         }
         if (str.equals("getMacAddress")) {
-            fixString2(paramMethodHookParam, "getSubscriberId");
+            fixString2(paramMethodHookParam, "getMacAddress");
             return;
         }
         if(str.equals("exists")) {
@@ -116,7 +115,6 @@ public class TelephoneHook extends XC_MethodHook{
                 // contain key
                 paramMethodHookParam.setResult(Boolean.FALSE);
                 Log.d("benija", "newFileCheck1:" + paramMethodHookParam.thisObject.toString());
-                return;
             }
         }
     }
@@ -146,8 +144,13 @@ public class TelephoneHook extends XC_MethodHook{
     public void fixBuildV(String paramString, final XC_LoadPackage.LoadPackageParam lpparam) {
         String str = getValue(paramString);
         if (str.length() > 0) {
-            XposedHelpers.setStaticObjectField(android.os.Build.class, paramString, str);
-            Log.d("benija", "fixStrings;" + paramString + "----" + str);
+            try {
+                XposedHelpers.setStaticObjectField(android.os.Build.class, paramString, str);
+                Log.d("benija", "fixBuildV;" + paramString + "----" + str);
+            }catch (Exception e){
+                // 出现异常
+                Log.e("benija", "fixBuildVFail;" + paramString + "----" + str + "----" + e.getMessage());
+            }
         } else {
             Log.e("benija", "fixStringFail;" + paramString + "----" + str);
         }

@@ -1,5 +1,6 @@
 package com.example.id5hook;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,7 +25,9 @@ import android.net.NetworkInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Arrays;
 
 public class XModule implements IXposedHookLoadPackage {
@@ -59,10 +62,7 @@ public class XModule implements IXposedHookLoadPackage {
             Log.d("benija", "fuckOther:" + lpparam.packageName);
             return;
         }
-//        if("com.touchsprite.android".equals(lpparam.packageName) || "com.example.id5hook".equals(lpparam.packageName)) {
-//            Log.d("benija", "fuckOther:" + lpparam.packageName);
-//            return;
-//        }
+
         Log.d("benija", "begin:" + lpparam.packageName);
         Log.d("benija", "loader:" + lpparam.classLoader.toString());
         final TelephoneHook telephoneHook = new TelephoneHook();
@@ -98,39 +98,19 @@ public class XModule implements IXposedHookLoadPackage {
         XposedHelpers.findAndHookMethod(BluetoothAdapter.class.getName(), lpparam.classLoader, "getAddress", telephoneHook);
         XposedHelpers.findAndHookMethod(BluetoothAdapter.class.getName(), lpparam.classLoader, "getName", telephoneHook);
         // 防止APP使用Runtime.exec方式获取一些特定的系统属性
-        XposedHelpers.findAndHookMethod(Runtime.class.getName(), lpparam.classLoader, "exec", String.class, String[].class, File.class, new XC_MethodHook() {
-            /*
-            id5：exec:[ls -l /system/bin/su, null, null] hook
-             */
-            @Override
-            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
-                for(int i=0; i<param1MethodHookParam.args.length; i++) {
-                    Log.d("benija", "exec:" + param1MethodHookParam.args[i]);
+        XposedHelpers.findAndHookMethod(Runtime.class.getName(), lpparam.classLoader, "exec", String[].class, new XC_MethodHook() {
+            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws  Throwable {
+                String[] sArray = (String[]) param1MethodHookParam.args[0];
+                if (sArray[0].equals("/system/xbin/which")) {
+                     param1MethodHookParam.args = null;
                 }
-                Process execRes = (Process) param1MethodHookParam.getResult();
-                Log.d("benija", "afterHookedMethod: " + execRes.toString());
-                BufferedReader stdInput = new BufferedReader(new
-                        InputStreamReader(execRes.getInputStream()));
-                String s = null;
-                param1MethodHookParam.setResult(null);
+                Log.d("benija", "execStringArray:" + Arrays.toString(sArray));
             }
         });
-//        XposedHelpers.findAndHookMethod(Runtime.class.getName(), lpparam.classLoader, "exec", String[].class, new XC_MethodHook() {
-//            @Override
-//            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws  Throwable {
-//                String[] sArray = (String[]) param1MethodHookParam.args[0];
-//                if (sArray[0].equals("/system/xbin/which")) {
-//                    // param1MethodHookParam.args = null;
-//                }
-//                Log.d("benija", "execStringArray:" + Arrays.toString(sArray));
-//            }
-//        });
 
         // 修改位置信息 todo，暂时没用到不处理
         XposedHelpers.findAndHookMethod(LocationManager.class.getName(), lpparam.classLoader, "getLastKnownLocation", String.class,
-                new XC_MethodHook()
-                {
-                    @Override
+                new XC_MethodHook() {
                     protected void afterHookedMethod(XC_MethodHook.MethodHookParam param1MethodHookParam) throws Throwable {
                         Log.d("benija", "getLastKnownLocation:" + Arrays.toString(param1MethodHookParam.args));
                     }
@@ -141,64 +121,123 @@ public class XModule implements IXposedHookLoadPackage {
         XposedHelpers.findAndHookMethod(android.telephony.gsm.GsmCellLocation.class.getName(), lpparam.classLoader, "getLac", telephoneHook);
         XposedHelpers.findAndHookMethod(android.telephony.gsm.GsmCellLocation.class.getName(), lpparam.classLoader, "getCid", telephoneHook);
 
-        // 修改ANDROID_ID TODO
+        // 修改ANDROID_ID
         XposedHelpers.findAndHookMethod(Settings.Secure.class.getName(), lpparam.classLoader, "getString", ContentResolver.class, String.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                Log.d("benija", "getString:" + param1MethodHookParam.args[1]);
+                Log.d("benija", "getString:" + param1MethodHookParam.args[1]);
                 telephoneHook.fixString2(param1MethodHookParam, (String) param1MethodHookParam.args[1]);
+            }
+        });
+
+        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, new XC_MethodHook() {
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                String str = (String) param1MethodHookParam.args[0];
+                if(param1MethodHookParam.args[0].equals("init.svc.qemud") || param1MethodHookParam.args[0].equals("init.svc.qemu-props") || param1MethodHookParam.args[0].equals("qemu.hw.mainkeys")
+                        || param1MethodHookParam.args[0].equals("qemu.sf.fake_camera") || param1MethodHookParam.args[0].equals("qemu.sf.lcd_density") || param1MethodHookParam.args[0].equals("ro.kernel.android.qemud")
+                        || param1MethodHookParam.args[0].equals("ro.kernel.qemu.gles")
+                ) {
+                    param1MethodHookParam.setResult(null);
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.bootloader")) {
+                    param1MethodHookParam.setResult("MSM8953_DAISY1.0_20181010204655");
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.bootmode")) {
+                    param1MethodHookParam.setResult("auto");
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.kernel.qemu")) {
+                    param1MethodHookParam.setResult("0");
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.board.platform")) {
+                    param1MethodHookParam.setResult("msm8953");
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.product.device")) {
+                    param1MethodHookParam.setResult("gauguininpro");
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.hardware")) {
+                    param1MethodHookParam.setResult("Qualcomm Technologies, Inc SM7250");
+                    return;
+                }
+                if (param1MethodHookParam.args[0].equals("ro.product.name")) {
+                    param1MethodHookParam.setResult(GenParams.getProductName());
+                    Log.d("benija", "set----" + param1MethodHookParam.args[0] + "----" + param1MethodHookParam.getResult());
+                    return;
+                }
+                Log.d("benija", "SystemPropertiesGetAfterHook----" + str + "----" + param1MethodHookParam.getResult());
+            }
+        });
+
+        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "native_get", String.class, new XC_MethodHook() {
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                if (param1MethodHookParam.args.length >0) {
+                    Log.d("benija", "native_get----" + param1MethodHookParam.args[0].toString() + "----" + param1MethodHookParam.getResult().toString());
+                }
             }
         });
 
         // 下面这个get是native_get的上一层函数，native_get是获取更底层的,用get也可以，不过hook native_get更加合适
         // XposedBridge.hookAllMethods(XposedHelpers.findClass("android.os.SystemProperties", lpparam.classLoader), "get", telephoneHook);
         // 为了防止某些APP跳过Build类 而直接使用SystemProperties.native_get获得参数
-        // todo
         XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
-            @Override
             protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
                 String str = (String) param1MethodHookParam.args[0];
-//                Log.d("benija", "native_get:" + str);
+                Log.d("benija", "SystemPropertiesGetAfterHook2----" + str + "----" + param1MethodHookParam.getResult());
                 telephoneHook.fixString2(param1MethodHookParam, str);
             }
-
-            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable
-            {
+            // 设定一些静态参数
+            protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
                 String methodName = param.method.getName();
-                if (methodName.startsWith("get"))
-                {
-                    Log.d("benija", "hook systemProperties ------>");
+                if (methodName.startsWith("get")) {
                     // 设定一些静态参数
+                    // 不能动位置，之前试过调整去加载app后运行，但会数据异常，应该是加载顺序问题。后面再研究
                     telephoneHook.fixBuild(lpparam);
                 }
             }
+
         });
 
-//        XposedHelpers.findAndHookMethod("android.os.SystemProperties", lpparam.classLoader, "get", String.class, new XC_MethodHook() {
-//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                String str = (String) param1MethodHookParam.args[0];
-//                if(param1MethodHookParam.args[0].equals("ro.bootloader2") || param1MethodHookParam.args[0].equals("ro.bootmode2") ||
-//                        param1MethodHookParam.args[0].equals("init.svc.qemud") || param1MethodHookParam.args[0].equals("init.svc.qemu-props") || param1MethodHookParam.args[0].equals("qemu.hw.mainkeys")
-//                        || param1MethodHookParam.args[0].equals("qemu.sf.fake_camera") || param1MethodHookParam.args[0].equals("qemu.sf.lcd_density") || param1MethodHookParam.args[0].equals("ro.kernel.android.qemud")
-//                        || param1MethodHookParam.args[0].equals("ro.kernel.qemu.gles")
-//                ) {
-//                    param1MethodHookParam.setResult(null);
-//                }
-//                Log.d("benija", "SystemPropertiesget----" + str + "----" + param1MethodHookParam.getResult());
-//            }
-//        });
-
-//        XposedHelpers.findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getInstallerPackageName", String.class, new XC_MethodHook() {
-//            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
-//                String sss = (String) param1MethodHookParam.args[0];
-//                if (sss.equals("com.android.flysilkworm") || sss.equals("com.android.coreservice") || sss.equals("com.cyanogenmod.filemanager")) {
-//                     param1MethodHookParam.setThrowable(new Exception("unknow"));
-//                }
-//                Log.d("benija", "getInstalledPackages----" + sss + "----" + param1MethodHookParam.getResult());
-//            }
-//        });
+        XposedHelpers.findAndHookMethod("android.app.ApplicationPackageManager", lpparam.classLoader, "getInstallerPackageName", String.class, new XC_MethodHook() {
+            protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                String sss = (String) param1MethodHookParam.args[0];
+                if (sss.equals("com.android.flysilkworm") || sss.equals("com.android.coreservice") || sss.equals("com.cyanogenmod.filemanager")) {
+                     param1MethodHookParam.setResult(null);
+                     param1MethodHookParam.setThrowable(new Exception("Unknown package: " + sss));
+                }
+                Log.d("benija", "getInstalledPackages----" + sss + "----" + param1MethodHookParam.getResult());
+            }
+        });
 
         XposedHelpers.findAndHookMethod(File.class.getName(), lpparam.classLoader, "exists", telephoneHook); // is root
+        XposedHelpers.findAndHookConstructor(FileReader.class, String.class, new XC_MethodHook() {
+            @SuppressLint("SdCardPath")
+            protected void beforeHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                String  readResultStr = (String) param1MethodHookParam.args[0];
+                if (readResultStr.equals("/proc/cpuinfo")) {
+                    param1MethodHookParam.args[0] = "/mnt/sdcard/cpuinfo_copy";
+                    return;
+                }
+                if (readResultStr.equals("/proc/meminfo")) {
+                    param1MethodHookParam.args[0] = "/mnt/sdcard/meminfo_copy";
+                    return;
+                }
+                Log.d("benija", "FileReader----" + param1MethodHookParam.args[0].toString());
+
+            }
+        });
+        XposedHelpers.findAndHookMethod(BufferedReader.class,  "readLine", new XC_MethodHook() {
+                    protected void afterHookedMethod(MethodHookParam param1MethodHookParam) throws Throwable {
+                        if (param1MethodHookParam.getResult()!= null) {
+                            Log.d("benija", "BufferedReaderHardware----" + param1MethodHookParam.getResult().toString());
+                        }
+                    }
+        });
+
         Log.d("benija", "init xposed finish");
         // 貌似是在app创建前hook，但不知道为什么hook失败
 //        XposedHelpers.findAndHookMethod(Activity.class.getName(), lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {

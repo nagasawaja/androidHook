@@ -15,9 +15,19 @@ import external.org.apache.commons.lang3.StringUtils;
 
 public class GenParams {
     public String data;
-    public static String[]MODEL = {"XIAOMI", "MEIZU", "HUAWEI", "SONY", "OPPO", "SAMSUNG", "LG", "ZTE", "VIVO", "HONOR", "ONEPLUS", "NUBIA", "魅族", "HISENSE", "lenovo", "leshi", "锤子", "oneplus", "小米","红米","黑鲨","华为","三星","索尼","音乐手机","荣耀"};
+    public static String[]MANUFACTURER = {"XIAOMI", "xiaomi"}; // backup , "MEIZU", "HUAWEI", "SONY", "OPPO", "SAMSUNG", "LG", "ZTE", "VIVO", "HONOR", "ONEPLUS", "NUBIA", "meizu", "HISENSE", "lenovo", "leshi", "chuizi", "oneplus", "hongmi","heisha","huawei","sanxing","suoni","rongyao"
     public static String[]MODEM = {"21C20B088S000C000,21C20B088S000C000","G973USQS4ETJ2","21C20B388S000C000,21C20B388S000C000","G970USQS4ETJ2","21C60B269S007C000,21C60B269S007C000","8974-AAAAANAZQ-10270086-81","M8940_41.00.01.163R SURF_NA_CA_CUST","21C20B526S000C000,21C20B526S000C000","S727VLUDS4ARF2","N975FXXS6DTK8,N975FXXS6DTK8","J530FXXS7CTF1,J530FXXS7CTF1","MPSS.AT.3.1-00777-SDM660_GEN_PACK-1.290939.2.294155.1","ztesh6735_65t_m_lwg_dsds","MPSS.JO.3.1.c5-00003-8937_GENNS_PACK-1_V048","M_V3_P10,M_V3_P10","A217FXXU4BTL1,A217FXXU4BTL1","MOLY.LR12A.R3.MP.V101.3,MOLY.LR12A.R3.MP.V101.3","G973USQS4ETJ2","N975FXXS6DTK8,N975FXXS6DTK8", "21C20B369S007C000,21C20B369S007C000"};
     public static String[]NetworkOperator = {"460-00", "460-01", "460-02", "460-03"};
+    public static String[]BOARD = {"cepheus", "vangogh"};
+    public static String[]PRODUCT_DEVICE = {"gauguin", "gauguinpro","alioth"};
+    public static String[]PRODUCT_NAME = {"joyeuse", "excalibur","picasso_48m", "angelica", "gemini", "umi", "cas"};
+    public static String[]MODEL = {
+            "16t", "16s", "16th", "16th plus",
+            "sm-n9760", "sm-g9730", "sm-g9750", "sm-n9600", "sm-g9600", "sm-g9650", "sm-n9500", "sm-g9550", "sm-g9500",
+            "redmi k20 pro", "mi 9", "mi 9 transparent edition", "m2006j10c", "mix 2s", "mix 3", "mi 8", "mi 8 ud", "skr-a0", "mi 6", "mix 2", "redmi k30 5g speed", "m2007j17c", "redmi k30 5g", "redmi k30i 5g", "m2002j9e", "m2004j7ac", "m2004j7bc",
+            "ang-an00", "brq-an00", "jef-tn00", "jef-an20", "jef-an00", "jer-an20", "jer-tn10", "jer-an10", "bmh-an10", "bmh-an20", "krj-w09", "evr-an00", "lya-al00", "lya-al10", "lya-tl00", "hma-al00", "hma-tl00", "lya-al00p", "evr-al00", "ele-al00", "ele-tl00", "vog-al00", "vog-al10", "sea-al10", "vrd-w09", "scm-al09", "vrd-al09", "vrd-al10", "vrd-w10", "scm-w09", "yal-al00", "yal-al10", "tny-al00", "pct-al10", "bah3-w59", "cdy-an00", "cdy-an20", "cdy-tn00", "tel-an00a", "cdy-an90", "cdy-an95", "cdy-tn90", "tel-an10", "tel-an00", "tel-tn00", "cdy-tn20"
+    };
+    public static String[]ROOM_VERSION={"miui_VANGOGH_V11.0.6.0.QJVCNXM","miui_VANGOGH_V11.0.9.0.QJVCNXM","miui_VANGOGH_V11.0.10.0.QJVCNXM","miui_VANGOGH_V12.0.3.0.QJVCNXM","miui_VANGOGH_V12.0.4.0.QJVCNXM","miui_VANGOGH_V12.0.5.0.QJVCNXM","miui_VANGOGH_V12.0.6.0.QJVCNXM","miui_VANGOGH_V12.1.3.0.RJVCNXM","miui_VANGOGH_V12.1.4.0.RJVCNXM","miui_VANGOGH_V12.1.5.0.RJVCNXM"};
     public static HashMap<String, String> getNetworkOperatorName = new HashMap<String, String>(){{
         put("460-00", "中国移动");
         put("460-01", "中国联通");
@@ -148,22 +158,29 @@ public class GenParams {
         }
     }
 
-    // 获取手机model
-    public static String getMODEL() {
-        String str = "";
-        for (int i = 0;i<5;i++){
-            str = str+ (char)(Math.random()*26+'A');
-        }
-        str = str + "'";
-        for (int i = 0;i<6;i++){
-            str = str+ (char)(Math.random()*26+'A');
-        }
-        return str;
+    public static String getMANUFACTURER() {
+        int index = (int) (Math.random() * MANUFACTURER.length);
+        return MANUFACTURER[index];
     }
 
-    public static String getMANUFACTURER() {
+    public static String getModel() {
         int index = (int) (Math.random() * MODEL.length);
         return MODEL[index];
+    }
+
+    public static String getRoomVersion() {
+        int index = (int) (Math.random() * ROOM_VERSION.length);
+        return ROOM_VERSION[index];
+    }
+
+    public static String getBOARD() {
+        int index = (int) (Math.random() * BOARD.length);
+        return BOARD[index];
+    }
+
+    public static String getProductName() {
+        int index = (int) (Math.random() * PRODUCT_NAME.length);
+        return PRODUCT_NAME[index];
     }
 
     public static String getMODEM() {
